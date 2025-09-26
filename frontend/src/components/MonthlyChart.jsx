@@ -1,0 +1,101 @@
+import { useEffect, useState } from 'react'
+import { getHealthLogs, getMiFitSleep } from '../lib/api'
+
+function abnormalDay({ heartRates, spo2s, sleepDuration }) {
+  const abnormal = []
+  if (heartRates.length && (Math.max(...heartRates) > 120 || Math.min(...heartRates) < 50)) abnormal.push('Nhịp tim bất thường')
+  if (spo2s.length && Math.min(...spo2s) < 94) abnormal.push('SpO2 thấp')
+  if (sleepDuration !== null && sleepDuration < 360) abnormal.push('Ngủ ít (<6h)')
+  return abnormal
+}
+
+export default function MonthlyChart({ year, month }) {
+  const [days, setDays] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [selectedMonth, setSelectedMonth] = useState(month)
+  const [selectedYear, setSelectedYear] = useState(year)
+
+  useEffect(() => {
+    setLoading(true)
+    // Lấy dữ liệu từng ngày trong tháng
+    const start = new Date(Date.UTC(selectedYear, selectedMonth - 1, 1))
+    const end = new Date(Date.UTC(selectedYear, selectedMonth, 0))
+    const dayList = []
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      dayList.push(new Date(d))
+    }
+    Promise.all(dayList.map(day => {
+      const dayStr = day.toISOString().slice(0, 10)
+      return Promise.all([
+  getHealthLogs({ activityType: 'heart_rate', date: dayStr, limit: 100 }),
+  getHealthLogs({ activityType: 'spo2', date: dayStr, limit: 100 }),
+  getMiFitSleep({ year: selectedYear, month: selectedMonth, limit: 100 })
+      ]).then(([hrRes, spo2Res, sleepRes]) => {
+        const heartRates = hrRes.items.map(i => i.value)
+        const spo2s = spo2Res.items.map(i => i.value)
+        // Lấy giấc ngủ của ngày đó
+        const sleepDay = sleepRes.items.filter(i => {
+          const itemDate = new Date(i.occurredAt).toISOString().slice(0, 10)
+          return itemDate === dayStr
+        })
+        const sleepDuration = sleepDay.length ? sleepDay.reduce((a, b) => a + (b.duration || 0), 0) : null
+        return {
+          date: dayStr,
+          heartRates,
+          spo2s,
+          sleepDuration,
+          abnormal: abnormalDay({ heartRates, spo2s, sleepDuration })
+        }
+      })
+    })).then(setDays).finally(() => setLoading(false))
+  }, [selectedYear, selectedMonth])
+
+  return (
+    <div className="mt-8 mb-8">
+      <div className="bg-white border rounded p-4 shadow-sm">
+        <h2 className="text-lg font-bold mb-2">Bảng thống kê chi tiết tháng</h2>
+        <div className="mb-4 flex gap-2 items-center">
+          <label className="text-sm">Chọn tháng:</label>
+          <select value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))} className="border rounded px-2 py-1">
+            {[...Array(12)].map((_, i) => (
+              <option key={i+1} value={i+1}>{i+1}</option>
+            ))}
+          </select>
+          <label className="text-sm">Năm:</label>
+          <select value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))} className="border rounded px-2 py-1">
+            {[2023, 2024, 2025].map(y => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+        </div>
+  <div className="mb-2 text-sm text-gray-700">Tháng {selectedMonth}/{selectedYear}</div>
+        {loading ? <div>Đang tải...</div> : (
+          <div className="overflow-x-auto">
+            <table className="min-w-[600px] w-full text-sm border">
+              <thead>
+                <tr className="bg-sky-50">
+                  <th className="border px-2 py-1">Ngày</th>
+                  <th className="border px-2 py-1">Nhịp tim (min-max)</th>
+                  <th className="border px-2 py-1">SpO2 (min)</th>
+                  <th className="border px-2 py-1">Thời gian ngủ</th>
+                  <th className="border px-2 py-1">Cảnh báo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {days.map(day => (
+                  <tr key={day.date} className={day.abnormal.length ? 'bg-rose-50' : ''}>
+                    <td className="border px-2 py-1 font-semibold">{new Date(day.date).toLocaleDateString('vi-VN')}</td>
+                    <td className="border px-2 py-1">{day.heartRates.length ? `${Math.min(...day.heartRates)} - ${Math.max(...day.heartRates)}` : '-'}</td>
+                    <td className="border px-2 py-1">{day.spo2s.length ? Math.min(...day.spo2s) : '-'}</td>
+                    <td className="border px-2 py-1">{day.sleepDuration !== null ? `${Math.floor(day.sleepDuration/60)}h ${day.sleepDuration%60}m` : '-'}</td>
+                    <td className="border px-2 py-1 text-red-700">{day.abnormal.length ? day.abnormal.join(', ') : ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

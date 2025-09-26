@@ -1,0 +1,13 @@
+{
+  "name": "healthlog-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npx concurrently -c \"auto\" -n \"backend,frontend\" \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
+
+

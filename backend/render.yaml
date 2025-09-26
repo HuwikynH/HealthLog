@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: healthlog-backend
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    branch: main
+    rootDir: ./
+    envVars:
+      - key: MONGO_URI
+        sync: false
