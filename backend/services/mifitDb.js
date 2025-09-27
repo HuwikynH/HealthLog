@@ -6,7 +6,7 @@ function getMiFitDb() {
   if (!conn || conn.readyState !== 1) {
     throw new Error('MongoDB chưa sẵn sàng');
   }
-  return conn.useDb('mifit', { useCache: true });
+  return conn.useDb('HealthLog', { useCache: true });
 }
 
 module.exports = { getMiFitDb };

@@ -11,7 +11,7 @@ const morgan = require('morgan');
 // Request logging
 app.use(morgan('dev'));
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/healthlog';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/HealthLog';
 const PORT = process.env.PORT || 5000;
 
 async function startServer() {
