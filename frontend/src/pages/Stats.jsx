@@ -141,33 +141,33 @@ export default function StatsPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Giấc ngủ chi tiết</h1>
-        <p className="text-gray-600">Phân tích chất lượng giấc ngủ</p>
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">Giấc ngủ chi tiết</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">Phân tích chất lượng giấc ngủ</p>
       </div>
       
-      <div className="bg-white/50 backdrop-blur-sm border border-gray-200/50 rounded-xl p-5 mb-6 shadow-sm">
-        <div className="flex gap-4 items-end">
-          <div className="flex flex-col min-w-[140px]">
-            <label className="block text-sm text-gray-600 mb-1">Ngày</label>
+      <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-xl p-3 sm:p-5 mb-4 sm:mb-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-end">
+          <div className="flex flex-col w-full sm:min-w-[140px]">
+            <label className="block text-sm text-gray-600 dark:text-gray-300 mb-1">Ngày</label>
             <input 
               type="date" 
-              className="border rounded px-2 py-2" 
+              className="border dark:border-gray-600 dark:bg-gray-700 dark:text-white bg-white text-gray-900 rounded px-2 py-2" 
               value={selectedDate} 
               onChange={(e) => setSelectedDate(e.target.value)}
             />
           </div>
-          <div className="text-sm text-gray-500 bg-gray-100 px-3 py-2 rounded-lg">
+          <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-lg text-center sm:text-left">
             {availableDates.length} ngày có dữ liệu
           </div>
         </div>
       </div>
 
-      {error && <div className="text-red-600 mb-3">{error}</div>}
+      {error && <div className="text-red-600 dark:text-red-400 mb-3">{error}</div>}
 
       {loading ? (
         <div className="text-center py-8">
-          <div className="inline-flex items-center gap-2 text-gray-500">
+          <div className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400">
             <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             Đang tải...
           </div>
@@ -201,55 +201,55 @@ export default function StatsPage() {
             const quality = getSleepQuality(sleep);
 
             return (
-              <div key={sleep.id} className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6 shadow-lg">
-                <div className="flex justify-between items-start mb-4">
+              <div key={sleep.id} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+                <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-3">
                   <div>
-                    <h3 className="font-semibold text-lg">
+                    <h3 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-white">
                       {new Date(sleep.occurredAt).toLocaleDateString('vi-VN')}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                       {new Date(sleep.occurredAt).toLocaleTimeString('vi-VN')}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-center sm:text-right">
+                    <div className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
                       {formatDuration(sleep.duration)}
                     </div>
-                    <div className="text-sm text-gray-600">Tổng thời gian ngủ</div>
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Tổng thời gian ngủ</div>
                     {/* Đánh giá giấc ngủ */}
-                    <div className={`mt-2 font-semibold ${quality.color}`}>
+                    <div className={`mt-2 font-semibold text-sm ${quality.color}`}>
                       <span>{quality.icon}</span> {quality.text}
                     </div>
                   </div>
                 </div>
 
                 {/* Nhịp tim */}
-                <div className="grid grid-cols-3 gap-4 mb-4 p-3 bg-gray-50 rounded">
+                <div className="grid grid-cols-3 gap-4 mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded">
                   <div className="text-center">
-                    <div className="text-lg font-semibold text-red-600">{sleep.minHr || '-'}</div>
-                    <div className="text-xs text-gray-600">Nhịp tim min</div>
+                    <div className="text-lg font-semibold text-red-600 dark:text-red-400">{sleep.minHr || '-'}</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-300">Nhịp tim min</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-semibold text-orange-600">{sleep.avgHr || '-'}</div>
-                    <div className="text-xs text-gray-600">Nhịp tim TB</div>
+                    <div className="text-lg font-semibold text-orange-600 dark:text-orange-400">{sleep.avgHr || '-'}</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-300">Nhịp tim TB</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-semibold text-red-700">{sleep.maxHr || '-'}</div>
-                    <div className="text-xs text-gray-600">Nhịp tim max</div>
+                    <div className="text-lg font-semibold text-red-700 dark:text-red-500">{sleep.maxHr || '-'}</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-300">Nhịp tim max</div>
                   </div>
                 </div>
 
                 {/* Các giai đoạn ngủ */}
                 <div className="space-y-3">
-                  <h4 className="font-medium text-gray-800">Các giai đoạn ngủ</h4>
+                  <h4 className="font-medium text-gray-800 dark:text-gray-200">Các giai đoạn ngủ</h4>
                   
                   {/* Ngủ sâu */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 bg-blue-800 rounded"></div>
-                      <span className="text-sm">Ngủ sâu</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Ngủ sâu</span>
                     </div>
-                    <div className="text-sm">
+                    <div className="text-sm text-gray-600 dark:text-gray-300">
                       {formatDuration(sleep.raw?.sleep_deep_duration || 0)} ({stages.deep}%)
                     </div>
                   </div>
@@ -258,9 +258,9 @@ export default function StatsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 bg-purple-600 rounded"></div>
-                      <span className="text-sm">Ngủ REM</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Ngủ REM</span>
                     </div>
-                    <div className="text-sm">
+                    <div className="text-sm text-gray-600 dark:text-gray-300">
                       {formatDuration(sleep.raw?.sleep_rem_duration || 0)} ({stages.rem}%)
                     </div>
                   </div>
@@ -269,9 +269,9 @@ export default function StatsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 bg-blue-400 rounded"></div>
-                      <span className="text-sm">Ngủ nông</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Ngủ nông</span>
                     </div>
-                    <div className="text-sm">
+                    <div className="text-sm text-gray-600 dark:text-gray-300">
                       {formatDuration(sleep.raw?.sleep_light_duration || 0)} ({stages.light}%)
                     </div>
                   </div>
@@ -280,16 +280,16 @@ export default function StatsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 bg-yellow-400 rounded"></div>
-                      <span className="text-sm">Thức giấc</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Thức giấc</span>
                     </div>
-                    <div className="text-sm">
+                    <div className="text-sm text-gray-600 dark:text-gray-300">
                       {formatDuration(sleep.raw?.sleep_awake_duration || 0)} ({stages.awake}%)
                     </div>
                   </div>
                 </div>
 
                 {/* Thông tin bổ sung */}
-                <div className="mt-4 pt-3 border-t text-xs text-gray-500">
+                <div className="mt-4 pt-3 border-t dark:border-gray-600 text-xs text-gray-500 dark:text-gray-400">
                   <div className="grid grid-cols-2 gap-2">
                     <div>Số lần thức giấc: {sleep.raw?.awake_count || 0}</div>
                     <div>Múi giờ: {sleep.raw?.timezone || '-'}</div>
@@ -298,22 +298,22 @@ export default function StatsPage() {
 
                 {/* Danh sách các lần ngủ trong ngày */}
                 <div className="mt-4">
-                  <h4 className="font-medium text-gray-800 mb-2">Các lần ngủ trong ngày</h4>
+                  <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Các lần ngủ trong ngày</h4>
                   {sleep.sessions && sleep.sessions.length > 0 ? (
-                    <div className="divide-y border rounded">
+                    <div className="divide-y dark:divide-gray-600 border dark:border-gray-600 rounded">
                       {sleep.sessions.map((ses) => (
                         <div key={ses.id} className="flex items-center justify-between px-3 py-2 text-sm">
-                          <div className="text-gray-700">
+                          <div className="text-gray-700 dark:text-gray-300">
                             {ses.start && ses.end
                               ? `${ses.start.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} – ${ses.end.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`
                               : ses.occurredAt.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                           </div>
-                          <div className="text-gray-600">{formatDuration(ses.duration)}</div>
+                          <div className="text-gray-600 dark:text-gray-300">{formatDuration(ses.duration)}</div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-sm text-gray-500">Không có bản ghi chi tiết.</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Không có bản ghi chi tiết.</div>
                   )}
                 </div>
               </div>
@@ -321,7 +321,7 @@ export default function StatsPage() {
           })}
           
           {filteredSleep.length === 0 && (
-            <div className="bg-white border rounded p-6 text-center text-gray-600">
+            <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded p-6 text-center text-gray-600 dark:text-gray-300">
               <div className="text-lg mb-2">😴</div>
               <div>Không có dữ liệu giấc ngủ cho ngày này</div>
             </div>
